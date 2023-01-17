@@ -458,7 +458,7 @@ void wm_window_title(wmWindowManager *wm, wmWindow *win)
       GHOST_SetTitle(win->ghostwin, str);
     }
     else {
-      GHOST_SetTitle(win->ghostwin, "AutoModelMaker");
+      GHOST_SetTitle(win->ghostwin, "LineRenderer");
     }
 
     /* Informs GHOST of unsaved changes, to set window modified visual indicator (macOS)
@@ -645,7 +645,7 @@ static void wm_window_ghostwindow_ensure(wmWindowManager *wm, wmWindow *win, boo
       win->cursor = WM_CURSOR_DEFAULT;
     }
 
-    wm_window_ghostwindow_add(wm, "AutoModelMaker", win, is_dialog);
+    wm_window_ghostwindow_add(wm, "LineRenderer", win, is_dialog);
   }
 
   if (win->ghostwin != NULL) {
