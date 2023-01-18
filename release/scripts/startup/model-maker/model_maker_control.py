@@ -1,5 +1,6 @@
 import bpy
 from bpy_extras.io_utils import ImportHelper, ExportHelper
+from .architecture import line_render
 
 
 class LineRendererPanel(bpy.types.Panel):
@@ -20,6 +21,8 @@ class LineRendererPanel(bpy.types.Panel):
         row.label(text="Line Render")
         row = layout.row()
         row.operator("wm.open_reference_image")
+        row = layout.row()
+        row.operator("wm.save_line_render")
 
         row = layout.row()
         row.label(text="Export")
@@ -46,10 +49,27 @@ class OpenReferenceImageOperator(bpy.types.Operator, ImportHelper):
         return {"FINISHED"}
 
 
+class SaveLineRenderImageOperator(bpy.types.Operator, ExportHelper):
+    """Save line render image"""
+
+    bl_idname = "wm.save_line_render"
+    bl_label = "Save Line Render"
+    bl_options = {"REGISTER", "UNDO"}
+
+    filename_ext = '.png'
+
+    def execute(self, context):
+        tuple_arg = (2.5, 2.5, 5)
+        path = self.filepath
+        line_render.render(tuple_arg, path)
+        return {"FINISHED"}
+
+
 ######register
 classes = [
     LineRendererPanel,
     OpenReferenceImageOperator,
+    SaveLineRenderImageOperator,
 ]
 
 
