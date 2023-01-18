@@ -4,7 +4,7 @@ from bpy.app.handlers import persistent
 
 def init_setting():
     init_screen = bpy.data.screens["ACON3D"].areas[0].spaces[0]
-    init_screen.shading.type = "MATERIAL"
+    init_screen.shading.type = "SOLID"
     init_screen.overlay.show_ortho_grid = True
     init_screen.overlay.show_floor = True
     init_screen.overlay.show_axis_x = True
