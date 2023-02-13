@@ -48,7 +48,10 @@ class OpenReferenceImageOperator(bpy.types.Operator, ImportHelper):
     def execute(self, context):
         # new_image = bpy.data.images.load(self.filepath)
         result = line_render_lib.usage(self.filepath)
-        line_render.render(result[0], self.filepath)
+        if save_result := line_render.render(result[0], self.filepath):
+            self.report({'INFO'}, f"Saved to {save_result}")
+        else:
+            self.report({'ERROR'}, "Failed to save")
         return {"FINISHED"}
 
 

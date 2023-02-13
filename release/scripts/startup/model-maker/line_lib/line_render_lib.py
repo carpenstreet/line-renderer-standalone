@@ -56,7 +56,7 @@ def fix_everything(random_seed):
 
 def compute(img_paths: List[str], model_ckpt: str, model_name: str):
     # Set device
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cpu")
     # Get Model
     model = get_model(model_ckpt, model_name).to(device)
     # Get Image
@@ -76,12 +76,11 @@ def get_image_tensors(img_paths: List[str]):
 def get_model(model_ckpt: str, model_name: str):
     model = Network(model_name)
     try:
-        model.load_state_dict(torch.load(model_ckpt))
+        model.load_state_dict(torch.load(model_ckpt, map_location=torch.device('cpu')))
     except Exception as e:
-        keys = torch.load(model_ckpt)
+        keys = torch.load(model_ckpt, map_location=torch.device('cpu'))
         new_keys = {k[7:]: v for k, v in keys.items()}
         model.load_state_dict(new_keys)
-        print(e)
 
     return model
 
