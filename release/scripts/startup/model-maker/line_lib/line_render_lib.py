@@ -118,7 +118,7 @@ def get_WDJ_values(img_paths):
 
 
 def usage(img_path: str) -> list[dict[str, Any]]:
-    MODEL_NAME = "convnext_small"  # This is fixed, for now.
+    MODEL_NAME = "regnetv_064"  # This is fixed, for now.
     img_paths = [img_path]
     model_ckpt = os.path.join(pathlib.Path(__file__).parent.resolve(), "FINAL_MODEL.pth")
     return compute(
