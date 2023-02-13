@@ -1,6 +1,14 @@
 import bpy
 from bpy_extras.io_utils import ImportHelper, ExportHelper
-from .architecture import line_render
+from .render_lib import line_render
+from .line_lib import line_render_lib
+
+
+def draw_section(layout, text):
+    result = layout.row()
+    result.label(text=text)
+    result = layout.row()
+    return result
 
 
 class LineRendererPanel(bpy.types.Panel):
@@ -17,16 +25,12 @@ class LineRendererPanel(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
 
-        row = layout.row()
-        row.label(text="Line Render")
-        row = layout.row()
+        row = draw_section(layout, "Line Render")
         row.operator("wm.open_reference_image")
         row = layout.row()
         row.operator("wm.save_line_render")
 
-        row = layout.row()
-        row.label(text="Export")
-        row = layout.row()
+        row = draw_section(layout, "Export")
         row.operator("wm.save_as_mainfile", text="Save Blend")
 
 
@@ -42,10 +46,9 @@ class OpenReferenceImageOperator(bpy.types.Operator, ImportHelper):
     filter_glob: bpy.props.StringProperty(default=image_extension, options={"HIDDEN"})
 
     def execute(self, context):
-        new_image = bpy.data.images.load(self.filepath)
-        # TODO: new_image를 render
-        # image = context.scene.camera.data.background_images[self.index]
-        # image.image = new_image
+        # new_image = bpy.data.images.load(self.filepath)
+        result = line_render_lib.usage(self.filepath)
+        line_render.render(result[0], self.filepath)
         return {"FINISHED"}
 
 
@@ -65,7 +68,7 @@ class SaveLineRenderImageOperator(bpy.types.Operator, ExportHelper):
         return {"FINISHED"}
 
 
-######register
+# register
 classes = [
     LineRendererPanel,
     OpenReferenceImageOperator,
