@@ -29,9 +29,12 @@ def render(dict_arg, path) -> Optional[str]:
         bpy.data.linestyles["LineStyle"].thickness_modifiers["Noise"].amplitude = jitter
 
         bpy.ops.render.render(use_viewport=True)
-
-        dirname = os.path.dirname(path)
-        filename = f"w{str(width)}d{str(dynamics)}j{str(jitter)}.png"
+        
+        dirname = os.path.join(os.path.dirname(path), "generated")
+        if not os.path.exists(dirname):
+            os.mkdir(dirname)
+        basename = os.path.basename(path)
+        filename = f"{os.path.splitext(basename)[0]}-w{str(width)}d{str(dynamics)}j{str(jitter)}.png"
         bpy.data.images[0].save_render(os.path.join(dirname, filename))
         return os.path.join(dirname, filename)
     except Exception as e:

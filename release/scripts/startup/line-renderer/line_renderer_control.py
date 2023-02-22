@@ -1,3 +1,4 @@
+import os
 import bpy
 from bpy_extras.io_utils import ImportHelper, ExportHelper
 from .render_lib import line_render
@@ -27,18 +28,13 @@ class LineRendererPanel(bpy.types.Panel):
 
         row = draw_section(layout, "Line Render")
         row.operator("wm.open_reference_image")
-        row = layout.row()
-        row.operator("wm.save_line_render")
-
-        row = draw_section(layout, "Export")
-        row.operator("wm.save_as_mainfile", text="Save Blend")
 
 
 class OpenReferenceImageOperator(bpy.types.Operator, ImportHelper):
     """Open line render reference image"""
 
     bl_idname = "wm.open_reference_image"
-    bl_label = "Open Image"
+    bl_label = "Open and Generate Image"
     bl_options = {"REGISTER", "UNDO"}
 
     image_extension = "*.png;*.jpg;*psd"
@@ -46,28 +42,14 @@ class OpenReferenceImageOperator(bpy.types.Operator, ImportHelper):
     filter_glob: bpy.props.StringProperty(default=image_extension, options={"HIDDEN"})
 
     def execute(self, context):
-        # new_image = bpy.data.images.load(self.filepath)
-        result = line_render_lib.usage(self.filepath)
-        if save_result := line_render.render(result[0], self.filepath):
-            self.report({'INFO'}, f"Saved to {save_result}")
-        else:
-            self.report({'ERROR'}, "Failed to save")
-        return {"FINISHED"}
-
-
-class SaveLineRenderImageOperator(bpy.types.Operator, ExportHelper):
-    """Save line render image"""
-
-    bl_idname = "wm.save_line_render"
-    bl_label = "Save Line Render"
-    bl_options = {"REGISTER", "UNDO"}
-
-    filename_ext = '.png'
-
-    def execute(self, context):
-        tuple_arg = (2.5, 2.5, 5)
-        path = self.filepath
-        line_render.render(tuple_arg, path)
+        dirname = os.path.dirname(self.filepath)
+        for file in os.listdir(dirname):
+            if file.endswith(".png"):
+                result = line_render_lib.usage(os.path.join(dirname, file))
+                save_result = line_render.render(result[0], os.path.join(dirname, file))
+                if save_result is None:
+                    print(f"Error occured for {file}")
+        self.report({'INFO'}, f"Saved to {os.path.dirname(save_result)}")
         return {"FINISHED"}
 
 
@@ -75,7 +57,6 @@ class SaveLineRenderImageOperator(bpy.types.Operator, ExportHelper):
 classes = [
     LineRendererPanel,
     OpenReferenceImageOperator,
-    SaveLineRenderImageOperator,
 ]
 
 

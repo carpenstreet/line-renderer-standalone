@@ -13,14 +13,14 @@ bl_info = {
 import bpy
 
 from . import pref
-from . import model_maker_control
+from . import line_renderer_control
 from types import ModuleType
 
 # =========================================================================
 # Registration:
 # =========================================================================
 
-importedLibrary = [pref, model_maker_control]
+importedLibrary = [pref, line_renderer_control]
 
 
 def register():
